@@ -1,0 +1,100 @@
+/* 
+  US SENATOR STOCK TRANSACTIONS
+    - HOW TO GAUGE PERFORMANCE
+     - DIFFERENT TIME FRAMES? MONTHS FOLLOWING TRANSACTION BY TICKER?
+     - DIFFERENCES IN NET CLOSING VS. OPENING TRANSACTIONS BY YEAR?
+    - NEED NEW DATASET FOR TRANSACTIONS 
+*/    
+    
+SELECT *
+FROM Markets..Transactions 
+ORDER BY 1 
+
+SELECT *
+FROM Markets..AAPL
+ORDER BY 1
+
+	--DELETE FROM Markets..Transactions where ticker = 'N/A'
+	--DELETE FROM Markets..Transactions where ticker = '--'
+		--ALTER TABLE Transactions
+		--ADD cost INT DEFAULT 1 ;
+			--UPDATE Transactions
+			--SET cost = 25000000
+			--WHERE value = 25000000
+		--UPDATE Transactions
+		--SET value = 15000 
+		--WHERE amount like '%15,000%'
+	--ALTER TABLE AAPL
+	--ALTER COLUMN [close] decimal(6,2);
+		--ALTER TABLE Transactions
+		--ALTER COLUMN transaction_date date;
+			--UPDATE Transactions
+			--SET senator = 'David Perdue'
+			--WHERE senator like '%Perdue%'
+
+
+	--FIND TOP TRADED TICKERS
+
+SELECT ticker,
+	COUNT(*) AS ticker_count
+FROM Markets..Transactions
+GROUP BY ticker
+ORDER BY ticker_count desc;
+
+	--TOP 5 TICKERS : AAPL, BAC, NFLX, MSFT, DIS
+
+SELECT senator, SUM(cost) as TotalAmount, count(senator) as TradeCount
+FROM Markets..Transactions
+WHERE ticker = 'AAPL'	
+GROUP BY senator
+ORDER BY TotalAmount DESC;
+
+	--TOP APPLE TRADER : PAT ROBERTS = 49 | David Perdue = 40
+
+SELECT senator, cost, ticker, type, transaction_date
+FROM Markets..Transactions
+WHERE ticker = 'AAPL'
+	AND senator = 'Pat Roberts'
+ORDER BY 5;
+
+SELECT *
+FROM Bob
+
+UPDATE Bob
+SET cost = (cost*-1)
+WHERE type like '%Sale%'
+
+SELECT AAPL.Date, AAPL.DayOpen, Bob.cost, Bob.type, Bob.senator,  ROUND((Bob.cost/AAPL.DayOpen), -2) as ShareCount
+FROM AAPL
+LEFT JOIN Bob ON AAPL.Date = Bob.transaction_date
+ORDER BY Date
+
+SELECT AAPL.Date, AAPL.DayOpen, Transactions.cost, Transactions.senator, Transactions.type, ROUND((Transactions.cost/AAPL.DayOpen), -2) as ShareCount
+FROM Markets..AAPL
+Full Outer Join Markets..Transactions
+	ON Transactions.transaction_date = AAPL.Date
+WHERE ticker = 'AAPL'
+	AND type = 'Purchase'
+ORDER BY Date
+
+	--FIND TOP 5 TRADERS
+
+SELECT senator, SUM(cost) as TotalAmount, count(senator) as TradeCount
+FROM Markets..Transactions
+GROUP BY senator
+ORDER BY TradeCount DESC;
+
+	--TOP 5 TRADERS : Kelly Loeffler|David A Perdue , Jr|John Hoeven|Pat Roberts|Sheldon Whitehouse
+
+SELECT senator, transaction_date, ticker, cost, type
+FROM Transactions
+WHERE senator like '%Perdue%'
+ORDER BY 3, 2
+
+SELECT ticker, count(ticker) as TradeCount
+FROM Transactions
+WHERE senator like '%Perdue%'
+GROUP BY ticker
+ORDER BY 2 DESC
+
+
